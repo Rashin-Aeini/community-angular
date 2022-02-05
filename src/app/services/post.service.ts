@@ -1,6 +1,9 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { PostFilter } from "../models/get.post.filter";
+import { Posts } from "../models/get.posts";
+import { CreatePost } from "../models/post.create.post";
 
 import { ConfigService } from "./config.service";
 
@@ -13,8 +16,15 @@ export class PostService {
         //this.http = http;
     }
 
-    get() : Observable<any>
-    {
-        return this.http.get(this.config.ServerAddress + '/post');
+    get(entry: PostFilter): Observable<Posts> {
+        return this.http.get<Posts>(this.config.ServerAddress + '/post', {
+            params: new HttpParams({
+                fromObject: { ...entry }
+            })
+        }); // select
+    }
+
+    post(entry : CreatePost) : Observable<any> {
+        return this.http.post(this.config.ServerAddress + '/post', entry);
     }
 }
