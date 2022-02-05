@@ -1,3 +1,53 @@
 <app-dashboard>
-    <h1>Hello from post index</h1>
+    <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Show all posts</h1>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-template *ngIf="posts.length != 0; then loop else message"></ng-template>
+                <ng-template #loop>
+                    <tr *ngFor="let item of posts">
+                        <td>
+                            {{ item.id }}
+                        </td>
+                        <td>
+                            {{ item.title }}
+                        </td>
+                        <td>
+                            <a class="btn btn-link text-info" routerLink="/post/{{ item.id }}">
+                                Edit
+                            </a>
+                            <button type="button" value="{{ item.id }}" class="btn btn-link text-danger" (click)="deletePost(item.id)" >
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template #message>
+                    <tr>
+                        <td colspan="3">
+                            <p>There is no post for showing</p>
+                        </td>
+                    </tr>
+                </ng-template>
+            </tbody>
+        </table>
+    </div>
+
 </app-dashboard>

@@ -1,3 +1,39 @@
 <app-dashboard>
-    <h1>Hello from post create</h1>
+    <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Create new post</h1>
+    </div>
+
+    <div>
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input class="form-control" id="title" [(ngModel)]="post.title" required #titleInput="ngModel">
+            <span class="text-danger" *ngIf="titleInput.invalid && (titleInput.touched || titleInput.dirty)">
+                The name is required
+            </span>
+        </div>
+        <div class="mb-3">
+            <label for="thumbnail" class="form-label">Thumbnail</label>
+            <input class="form-control" id="thumbnail" [(ngModel)]="post.thumbnail">
+            <span class="text-danger" asp-validation-for="Thumbnail"></span>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Content</label>
+            <textarea class="form-control" id="content" [(ngModel)]="post.content" required
+                #contentInput="ngModel"></textarea>
+            <span class="text-danger" *ngIf="contentInput.invalid && (contentInput.touched || contentInput.dirty)">
+                The content is required
+            </span>
+        </div>
+        <div class="mb-3" *ngIf="categories.length != 0">
+            <div class="form-check" *ngFor="let item of categories">
+                <input class="form-check-input" type="checkbox" id="categories[{{item.id}}]"
+                    (change)="checkCategories(item.id)">
+                <label class="form-check-label" for="categories[{{item.id}}]">
+                    {{item.title}}
+                </label>
+            </div>
+        </div>
+        <button class="btn btn-primary" (click)="sendData()">Submit</button>
+    </div>
 </app-dashboard>
