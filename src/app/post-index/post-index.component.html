@@ -4,14 +4,27 @@
         <h1 class="h2">Show all posts</h1>
     </div>
 
+    <div class="d-flex flex-column mb-2">
+        <div class="ms-auto">
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="search" class="col-form-label">Search</label>
+                </div>
+                <div class="col-auto">
+                    <input id="search" class="form-control" [(ngModel)]="filter.search" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>
+                    <th style="cursor: pointer;" (click)="sorting('Id')">
                         #
                     </th>
-                    <th>
+                    <th style="cursor: pointer;" (click)="sorting('Title')">
                         Title
                     </th>
                     <th>
@@ -33,7 +46,8 @@
                             <a class="btn btn-link text-info" routerLink="/post/{{ item.id }}">
                                 Edit
                             </a>
-                            <button type="button" value="{{ item.id }}" class="btn btn-link text-danger" (click)="deletePost(item.id)" >
+                            <button type="button" value="{{ item.id }}" class="btn btn-link text-danger"
+                                (click)="deletePost(item.id)">
                                 Delete
                             </button>
                         </td>

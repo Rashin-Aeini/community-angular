@@ -24,7 +24,19 @@ export class PostService {
         }); // select
     }
 
+    getById(id: number) : Observable<CreatePost>{
+        return this.http.get<CreatePost>(this.config.ServerAddress + '/post/' + id);
+    }
+
     post(entry : CreatePost) : Observable<any> {
         return this.http.post(this.config.ServerAddress + '/post', entry);
+    }
+
+    update(id: number, entry: CreatePost) : Observable<any> {
+        return this.http.post(this.config.ServerAddress + '/post/' + id, entry);
+    }
+
+    delete(id : number) : Observable<any> {
+        return this.http.delete(this.config.ServerAddress + '/post/' + id);
     }
 }

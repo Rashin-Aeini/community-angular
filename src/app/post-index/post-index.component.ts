@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, DoCheck, KeyValueDiffers, KeyValueDiffer } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Post } from '../models/get.post';
+import { PostFilter } from '../models/get.post.filter';
 import { Posts } from '../models/get.posts';
 import { PostService } from '../services/post.service';
 
@@ -11,36 +13,69 @@ import { PostService } from '../services/post.service';
   providers: [PostService]
 })
 
-export class PostIndexComponent implements OnInit {
+export class PostIndexComponent implements OnInit, DoCheck {
 
   //private getSubscribe : Subscription = any;
 
   pages: number = 0;
   posts: Post[] = [];
 
-  sort: string = '';
-  type: string = '';
+  filter: PostFilter = {
+    sort: '',
+    type: '',
+    search: '',
+    page: 1
+  };
 
-  constructor(private service: PostService) {
-    //this.getSubscribe = {};
-    //let mine : Post = {};
+  watcher: KeyValueDiffer<string, any>;
+
+  constructor(private service: PostService, private router: Router, private differs: KeyValueDiffers) {
+    this.watcher = differs.find({}).create();
+  }
+
+  ngDoCheck(): void {
+    if (this.watcher.diff(this.filter)) {
+      this.fetch();
+    }
   }
 
   ngOnInit(): void {
-
-    this.service.get({
-      search: '', sort: this.sort,
-      type: this.type, page: 1
-    })
-      .subscribe(response => {
-        this.pages = response.pages;
-        this.posts = response.result
-      });
-
+    this.fetch();
   }
 
   deletePost(id: number): void {
     // event.target.value
+    let subscribe: Subscription = this.service.delete(id)
+      .subscribe(response => {
+        this.filter = {
+          sort: '',
+          type: '',
+          search: '',
+          page: 1
+        };
+
+        this.fetch();
+
+        subscribe.unsubscribe();
+      });
+  }
+
+  fetch(): void {
+    let subscribe: Subscription = this.service.get(this.filter)
+      .subscribe(response => {
+        this.pages = response.pages;
+        this.posts = response.result
+
+        subscribe.unsubscribe();
+      });
+  }
+
+  sorting(field: string): void {
+    if (this.filter.sort == field) {
+      this.filter.type = this.filter.type == 'Asc' ? 'Desc' : 'Asc';
+    } else {
+      this.filter = { ...this.filter, sort: field, type: 'Asc' };
+    }
   }
 
 }
